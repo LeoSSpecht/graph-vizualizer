@@ -41,13 +41,13 @@ export class Graph {
 
   constructor() {
     this.addVertex(100, 100);
-    this.addVertex(200, 200);
-
-    this.addVertex(200, 300);
-
-    this.addVertex(350, 200);
-
     this.addVertex(300, 300);
+
+    this.addVertex(300, 450);
+
+    this.addVertex(525, 300);
+
+    this.addVertex(450, 450);
 
     this.addEdge("0", "1", 10);
     this.addEdge("1", "2", 5);

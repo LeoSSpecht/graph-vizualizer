@@ -12,9 +12,9 @@ export const styles: { [key: string]: CSSProperties } = {
     paddingTop: 4,
     paddingBottom: 4,
     gap: 10,
-
     flex: 1,
     width: "100%",
+    fontWeight: "bold",
   },
   BUTTON_CONTAINER: {
     display: "flex",

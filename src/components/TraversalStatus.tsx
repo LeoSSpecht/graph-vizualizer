@@ -5,6 +5,7 @@ type TraversalStatusProps = {
   HasStarted: boolean;
   IsDone: boolean;
   PathFound: boolean;
+  PathSize: number;
 };
 
 enum Status {
@@ -94,6 +95,7 @@ export function TraversalStatus({
   HasStarted,
   IsDone,
   PathFound,
+  PathSize,
 }: TraversalStatusProps) {
   const status = GetTraversalStatus(HasStarted, IsDone, PathFound);
 
@@ -108,6 +110,7 @@ export function TraversalStatus({
     >
       {data?.icon}
       {data?.text}
+      {status === Status.PATH_FOUND ? " - Total distance: " + PathSize : null}
     </div>
   );
 }

@@ -5,3 +5,4 @@
 - Import and export graphs
   - Import and export multiple graphs
 - Some default graphs
+- Actual A*

@@ -9,6 +9,29 @@ const ARROW_SIZE = 25;
 const ARROW_ANGLE = 0.5; // Angle on the tip of the edge in radians
 const LEGEND_PADDING = 25;
 
+function DrawCenteredText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  // Center X coordinate of text
+  centeredX: number,
+  // Center Y coordinate of text
+  centeredY: number,
+  font: string = "bold 28px system-ui",
+  color: string = "black"
+) {
+  ctx.font = font;
+  ctx.fillStyle = color;
+
+  const textMeasurement = ctx.measureText(text);
+  let textHeight = textMeasurement.actualBoundingBoxAscent;
+  let textWidth = textMeasurement.width;
+
+  let physicalX = centeredX - textWidth / 2;
+  let physicalY = centeredY + textHeight / 2;
+  // Padding on the left to account for everything drawn before
+  ctx.fillText(text, physicalX, physicalY);
+}
+
 function DrawCircle(
   ctx: CanvasRenderingContext2D,
   x: number,
@@ -27,6 +50,7 @@ function DrawVertex(
 ) {
   ctx.fillStyle = graphTraversal.GetVertexColor(v);
   DrawCircle(ctx, v.x, v.y, CIRCLE_RADIUS);
+  DrawCenteredText(ctx, v.id, v.x, v.y);
 }
 
 function DrawLine(
@@ -99,6 +123,21 @@ function DrawEdge(
   let edgeColor = graphTraversal.GetEdgeColor(e);
   DrawLine(ctx, e.origin, e.destination, edgeColor);
   DrawArrowHead(ctx, e.origin, e.destination, edgeColor);
+
+  let dX = e.destination.x - e.origin.x;
+  let dY = e.destination.y - e.origin.y;
+
+  let midpointX = e.origin.x + dX / 2;
+  let midpointY = e.origin.y + dY / 2;
+
+  DrawCenteredText(
+    ctx,
+    e.weight.toString(),
+    midpointX,
+    midpointY,
+    undefined,
+    "blue"
+  );
 }
 
 function DrawLegend(

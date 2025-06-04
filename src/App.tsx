@@ -97,6 +97,7 @@ function App() {
             HasStarted={hasTraversalStarted}
             IsDone={isTraversalDone}
             PathFound={graphTraversal.IsPathFound()}
+            PathSize={graphTraversal.totalDistance}
           />
         }
         <div id="traversal-controls" style={{ display: "flex", gap: 10 }}>
