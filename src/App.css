@@ -1,0 +1,12 @@
+.App {
+  text-align: center;
+  font-family: "system-ui",
+}
+
+button:active {
+  opacity: 0.5;
+}
+
+button:disabled {
+  opacity: 0.5;
+}
