@@ -1,4 +1,5 @@
 import { RefObject, useEffect } from "react";
+import { PIXEL_TO_DISTANCE_SCALE } from "../services/GraphDraw";
 
 type GraphCanvasProps = {
   ref?: RefObject<HTMLCanvasElement | null>;
@@ -23,7 +24,8 @@ export function GraphCanvas({
 
       canvas.width = virtualX ? virtualX : actualWidth;
       canvas.height = virtualY ? virtualY : actualHeight;
-      // const context = canvas.getContext("2d");
+      const context = canvas.getContext("2d")!;
+      context.scale(PIXEL_TO_DISTANCE_SCALE, PIXEL_TO_DISTANCE_SCALE);
 
       // context?.scale(2, 2);
       const clickEventListener = (event: MouseEvent) => {

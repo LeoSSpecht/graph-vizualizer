@@ -40,14 +40,14 @@ export class Graph {
   edges: Map<string, Edge[]> = new Map<string, Edge[]>();
 
   constructor() {
-    this.addVertex(100, 100);
-    this.addVertex(300, 300);
+    this.addVertex(10, 10);
+    this.addVertex(30, 30);
 
-    this.addVertex(300, 450);
+    this.addVertex(30, 45);
 
-    this.addVertex(525, 300);
+    this.addVertex(52, 30);
 
-    this.addVertex(450, 450);
+    this.addVertex(45, 45);
 
     this.addEdge("0", "1", 10);
     this.addEdge("1", "2", 5);

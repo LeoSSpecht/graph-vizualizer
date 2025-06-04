@@ -2,12 +2,20 @@ import { RefObject } from "react";
 import { Edge, Graph, Vertex } from "./Graph";
 import { GraphTraversal } from "./GraphTraversal";
 
-export const CIRCLE_RADIUS = 25;
-const LEGEND_CIRCLE_RADIUS = 15;
-const LINE_WIDTH = 5;
-const ARROW_SIZE = 25;
+export const CIRCLE_RADIUS = 2.5;
+const LEGEND_CIRCLE_RADIUS = 2;
+const LINE_WIDTH = 0.5;
+const ARROW_SIZE = 2;
 const ARROW_ANGLE = 0.5; // Angle on the tip of the edge in radians
-const LEGEND_PADDING = 25;
+
+const LEGEND_PADDING = 3;
+const LINE_PADDING = 4.5;
+const LEGEND_FONT = "3px system-ui";
+const CENTERED_TEXT_DEFAULT_FONT = "bold 3px system-ui";
+const CANVAS_BACKGROUND = "black";
+
+// Each 10 pixels represents a distance of 1
+export const PIXEL_TO_DISTANCE_SCALE = 10;
 
 function DrawCenteredText(
   ctx: CanvasRenderingContext2D,
@@ -16,7 +24,7 @@ function DrawCenteredText(
   centeredX: number,
   // Center Y coordinate of text
   centeredY: number,
-  font: string = "bold 28px system-ui",
+  font: string = CENTERED_TEXT_DEFAULT_FONT,
   color: string = "black"
 ) {
   ctx.font = font;
@@ -41,16 +49,6 @@ function DrawCircle(
   ctx.beginPath();
   ctx.arc(x, y, radius, 0, Math.PI * 2);
   ctx.fill();
-}
-
-function DrawVertex(
-  ctx: CanvasRenderingContext2D,
-  v: Vertex,
-  graphTraversal: GraphTraversal
-) {
-  ctx.fillStyle = graphTraversal.GetVertexColor(v);
-  DrawCircle(ctx, v.x, v.y, CIRCLE_RADIUS);
-  DrawCenteredText(ctx, v.id, v.x, v.y);
 }
 
 function DrawLine(
@@ -136,8 +134,18 @@ function DrawEdge(
     midpointX,
     midpointY,
     undefined,
-    "blue"
+    "rgb(33, 238, 112)"
   );
+}
+
+function DrawVertex(
+  ctx: CanvasRenderingContext2D,
+  v: Vertex,
+  graphTraversal: GraphTraversal
+) {
+  ctx.fillStyle = graphTraversal.GetVertexColor(v);
+  DrawCircle(ctx, v.x, v.y, CIRCLE_RADIUS);
+  DrawCenteredText(ctx, v.id, v.x, v.y);
 }
 
 function DrawLegend(
@@ -145,10 +153,9 @@ function DrawLegend(
   ctx: CanvasRenderingContext2D,
   graphTraversal: GraphTraversal
 ) {
-  let h = canvas.height;
+  let h = canvas.height / PIXEL_TO_DISTANCE_SCALE;
 
-  const linePadding = 40;
-  ctx.font = "28px system-ui";
+  ctx.font = LEGEND_FONT;
 
   var currentY = h - LEGEND_PADDING;
   for (const item of graphTraversal.GetLegend()) {
@@ -173,7 +180,7 @@ function DrawLegend(
       LEGEND_PADDING * 2 + LEGEND_CIRCLE_RADIUS,
       currentY
     );
-    currentY -= linePadding;
+    currentY -= LINE_PADDING;
   }
 }
 
@@ -190,7 +197,7 @@ export function GraphDraw(
   var ctx = canvas.getContext("2d")!;
 
   // Reset canvas
-  ctx.fillStyle = "black";
+  ctx.fillStyle = CANVAS_BACKGROUND;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // Draw legend

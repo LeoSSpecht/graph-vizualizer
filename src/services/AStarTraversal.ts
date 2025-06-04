@@ -204,6 +204,6 @@ export class AStar implements GraphTraversal {
     if (this.pathEdges.includes(e.id)) {
       return "green";
     }
-    return "white";
+    return "rgb(64, 101, 145)";
   }
 }
