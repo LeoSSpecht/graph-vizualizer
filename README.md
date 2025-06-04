@@ -1,9 +1,7 @@
 # A simple graph vizualizer project
 
 
-- OK Traversal and show colors
-- OK Legend on colors
-- Set origin and destination
-- Show colors on arrows
-- Adjust size of vertex
+- Show vertex ID and edge id
 - Import and export graphs
+  - Import and export multiple graphs
+- Some default graphs

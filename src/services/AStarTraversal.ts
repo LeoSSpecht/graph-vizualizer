@@ -86,9 +86,7 @@ export class AStar implements GraphTraversal {
     const neighbors = this.graph.getNeighbors(this.currentNode.id) ?? [];
     return (
       this.currentNode.id === this.destinationNode?.id ||
-      (this.minHeap.items.length === 0 &&
-        neighbors.length === 0 &&
-        this.currentNode.id !== this.originNode.id)
+      (this.minHeap.items.length === 0 && neighbors.length === 0)
     );
   }
 

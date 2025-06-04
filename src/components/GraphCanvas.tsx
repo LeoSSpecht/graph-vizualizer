@@ -46,5 +46,5 @@ export function GraphCanvas({
     }
   }, [ref, virtualX, virtualY, onClickHandler]);
 
-  return <canvas ref={ref} style={{ height: 500, width: 500 }}></canvas>;
+  return <canvas ref={ref} style={{ height: 600, width: 600 }}></canvas>;
 }

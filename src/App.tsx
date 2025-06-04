@@ -7,6 +7,7 @@ import { AStar } from "./services/AStarTraversal";
 import { Selector } from "./components/Selector";
 import { styles } from "./components/Style";
 import { MoveLeft, MoveRight } from "lucide-react";
+import { TraversalStatus } from "./components/TraversalStatus";
 
 function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -47,8 +48,6 @@ function App() {
     setIsTraversalDone(graphTraversal.IsDone());
     setHasTraversalStarted(graphTraversal.HasStarted());
   };
-
-  // const getTraversalStatus
 
   const undoTraverse = () => {
     graphTraversal.Undo();
@@ -93,7 +92,13 @@ function App() {
           alignItems: "center",
         }}
       >
-        <div>{}</div>
+        {
+          <TraversalStatus
+            HasStarted={hasTraversalStarted}
+            IsDone={isTraversalDone}
+            PathFound={graphTraversal.IsPathFound()}
+          />
+        }
         <div id="traversal-controls" style={{ display: "flex", gap: 10 }}>
           <button
             style={styles.BUTTON_CONTAINER}
