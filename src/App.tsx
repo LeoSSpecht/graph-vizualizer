@@ -48,6 +48,8 @@ function App() {
     setHasTraversalStarted(graphTraversal.HasStarted());
   };
 
+  // const getTraversalStatus
+
   const undoTraverse = () => {
     graphTraversal.Undo();
     GraphDraw(canvasRef, graph, graphTraversal);
@@ -91,6 +93,7 @@ function App() {
           alignItems: "center",
         }}
       >
+        <div>{}</div>
         <div id="traversal-controls" style={{ display: "flex", gap: 10 }}>
           <button
             style={styles.BUTTON_CONTAINER}
@@ -110,7 +113,7 @@ function App() {
           </button>
         </div>
 
-        <div style={{ display: "flex", gap: 10 }}>
+        <div id="node-selector" style={{ display: "flex", gap: 10 }}>
           <Selector
             title="Origin Node"
             selectedValue={originNode?.id}

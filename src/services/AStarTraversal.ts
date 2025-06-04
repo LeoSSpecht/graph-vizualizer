@@ -30,6 +30,7 @@ export class AStar implements GraphTraversal {
 
   // Best path once path is found
   path: string[] = [];
+  pathEdges: string[] = [];
   // Total distance once path is found
   totalDistance: number = 0;
 
@@ -43,16 +44,23 @@ export class AStar implements GraphTraversal {
     this.visited.clear();
     this.backmap.clear();
     this.path = [];
+    this.pathEdges = [];
     this.totalDistance = 0;
     this.history = [];
     this.minHeap = new MinHeap<PriorityNode>(this.minHeap.comparator);
+    this.currentNode = this.originNode;
+    if (this.currentNode) {
+      this.backmap.set(this.currentNode.id, {
+        distance: 0,
+        previous: "",
+      });
+      this.visited.add(this.currentNode.id);
+    }
   }
 
   SetOrigin(v: Vertex): void {
-    this.ResetTraversal();
     this.originNode = v;
-    this.currentNode = v;
-    this.visited.add(v.id);
+    this.ResetTraversal();
   }
 
   SetDestination(v: Vertex): void {
@@ -84,9 +92,32 @@ export class AStar implements GraphTraversal {
     );
   }
 
+  IsPathFound(): boolean {
+    return this.IsDone() && this.path.length !== 0;
+  }
+
+  BacktrackPath(): void {
+    if (this.currentNode.id !== this.destinationNode?.id) {
+      throw new Error("Should only backtrack when path is found");
+    }
+    let backmapNode = this.backmap.get(this.destinationNode.id)!;
+    this.totalDistance = backmapNode.distance;
+
+    let curr_id = this.destinationNode!.id;
+    do {
+      this.path.push(curr_id);
+
+      let previous = backmapNode.previous;
+      this.pathEdges.push(this.graph._getEdgeID(previous, curr_id));
+      curr_id = previous;
+      backmapNode = this.backmap.get(curr_id)!;
+    } while (curr_id !== this.originNode.id);
+
+    this.path.push(curr_id);
+  }
+
   Traverse(): void {
     this.history.push(this.DeepCopy());
-    console.log(this.currentNode);
     if (!this.destinationNode) {
       throw new Error("Need destination node in order to traverse");
     }
@@ -108,21 +139,25 @@ export class AStar implements GraphTraversal {
       let existingDistanceToNeighbor =
         this.backmap.get(neighbor.id)?.distance ?? Infinity;
 
+      // Revisit priority to check for A*
       if (currDistanceToNeighbor < existingDistanceToNeighbor) {
         this.backmap.set(neighbor.id, {
           distance: currDistanceToNeighbor,
-          previous: neighbor.id,
+          previous: this.currentNode.id,
         });
         this.minHeap.heappush({
-          priority: edge.weight,
+          priority: currDistanceToNeighbor,
           vertexID: neighbor.id,
         });
       }
     }
 
     this.currentNode = this.graph.getVertex(this.minHeap.heappop()!.vertexID)!;
-    console.log(this.currentNode);
     this.visited.add(this.currentNode.id);
+
+    if (this.currentNode.id === this.destinationNode.id) {
+      this.BacktrackPath();
+    }
   }
 
   Undo(): void {
@@ -144,13 +179,14 @@ export class AStar implements GraphTraversal {
     clone.backmap = structuredClone(this.backmap);
     clone.visited = structuredClone(this.visited);
     clone.path = this.path.slice();
+    clone.pathEdges = this.pathEdges.slice();
     clone.totalDistance = this.totalDistance;
 
     return clone;
   }
 
   GetVertexColor(v: Vertex): string {
-    if (this.path.find((p) => p === v.id)) {
+    if (this.path.includes(v.id)) {
       return "green";
     }
     if (this.currentNode.id === v.id) {
@@ -166,7 +202,10 @@ export class AStar implements GraphTraversal {
     return "gray";
   }
 
-  GetEdgeColor(v: Edge): string {
+  GetEdgeColor(e: Edge): string {
+    if (this.pathEdges.includes(e.id)) {
+      return "green";
+    }
     return "white";
   }
 }

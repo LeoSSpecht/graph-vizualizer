@@ -32,10 +32,11 @@ function DrawVertex(
 function DrawLine(
   ctx: CanvasRenderingContext2D,
   origin: Vertex,
-  destination: Vertex
+  destination: Vertex,
+  color: string
 ) {
   // Draw initial line
-  ctx.strokeStyle = "white";
+  ctx.strokeStyle = color;
   ctx.lineWidth = LINE_WIDTH;
   ctx.beginPath();
 
@@ -53,9 +54,10 @@ function DrawLine(
 function DrawArrowHead(
   ctx: CanvasRenderingContext2D,
   origin: Vertex,
-  destination: Vertex
+  destination: Vertex,
+  color: string
 ) {
-  ctx.fillStyle = "white";
+  ctx.fillStyle = color;
 
   const x1 = origin.x;
   const y1 = origin.y;
@@ -89,9 +91,14 @@ function DrawArrowHead(
   ctx.fill();
 }
 
-function DrawEdge(ctx: CanvasRenderingContext2D, e: Edge) {
-  DrawLine(ctx, e.origin, e.destination);
-  DrawArrowHead(ctx, e.origin, e.destination);
+function DrawEdge(
+  ctx: CanvasRenderingContext2D,
+  e: Edge,
+  graphTraversal: GraphTraversal
+) {
+  let edgeColor = graphTraversal.GetEdgeColor(e);
+  DrawLine(ctx, e.origin, e.destination, edgeColor);
+  DrawArrowHead(ctx, e.origin, e.destination, edgeColor);
 }
 
 function DrawLegend(
@@ -153,7 +160,7 @@ export function GraphDraw(
   // Draw out each edge
   graph.edges.forEach((edges) => {
     edges.forEach((e) => {
-      DrawEdge(ctx, e);
+      DrawEdge(ctx, e, graphTraversal);
     });
   });
 
