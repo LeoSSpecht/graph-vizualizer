@@ -18,6 +18,7 @@ import {
 import { TraversalStatus } from "./components/TraversalStatus";
 import { DefaultGraph, GridGraph } from "./services/GraphFactories";
 import { GraphOptions, GraphSelector } from "./components/GraphSelector";
+import { Controls } from "./components/Controls";
 
 const saveFile = async (obj: any, filename: string = "graph.json") => {
   const blob = new Blob([JSON.stringify(obj, null, 2)], {
@@ -305,7 +306,8 @@ function App() {
       className="App"
       style={{
         display: "flex",
-        flexDirection: "column",
+        // flexDirection: "column",
+        justifyContent: "center",
         alignItems: "center",
       }}
       onDragOver={handleDragOver}
@@ -341,139 +343,31 @@ function App() {
         virtualY={1000}
         onClickHandler={setNode}
       />
-      <div id="options" style={{ display: "flex", padding: 10, gap: 10 }}>
-        <div
-          id="controls2"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 10,
-            alignItems: "center",
-          }}
-        >
-          <button style={styles.BUTTON_CONTAINER} onClick={onSave}>
-            <Save />
-            Save Graph
-          </button>
-          <button style={styles.BUTTON_CONTAINER} onClick={onImportFile}>
-            <Upload />
-            Import Graph
-          </button>
-          <GraphSelector onChange={onSelectGraph} options={defaultGraphs} />
-          <button style={styles.BUTTON_CONTAINER} onClick={restartTraversal}>
-            <RotateCcw />
-            Restart Traversal
-          </button>
-          <button style={styles.BUTTON_CONTAINER} onClick={fullTraversal}>
-            Full Traversal
-            <StepForward />
-          </button>
-          <div
-            style={{
-              ...styles.BUTTON_CONTAINER,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 5,
-            }}
-          >
-            <span>Interval (ms)</span>
-            <input
-              type="number"
-              style={{ maxWidth: 60, textAlign: "center" }}
-              value={traversalInterval}
-              onChange={(e) => setTraversalInterval(parseInt(e.target.value))}
-            />
-          </div>
-        </div>
-        <div
-          id="controls"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 10,
-            alignItems: "center",
-          }}
-        >
-          {
-            <TraversalStatus
-              HasStarted={hasTraversalStarted}
-              IsDone={isTraversalDone}
-              PathFound={graphTraversal.IsPathFound()}
-              PathSize={graphTraversal.totalDistance}
-            />
-          }
-          <div id="traversal-controls" style={{ display: "flex", gap: 10 }}>
-            <button
-              style={styles.BUTTON_CONTAINER}
-              disabled={!hasTraversalStarted}
-              onClick={undoTraverse}
-            >
-              <MoveLeft />
-              Undo
-            </button>
-            <button
-              style={styles.BUTTON_CONTAINER}
-              disabled={isTraversalDone}
-              onClick={traverse}
-            >
-              Traverse
-              <MoveRight />
-            </button>
-          </div>
-
-          <div id="node-selector" style={{ display: "flex", gap: 10 }}>
-            <Selector
-              title="Origin Node"
-              selectedValue={originNode?.id}
-              isSelecting={isSelectingOrigin}
-              onSelect={() => {
-                setIsSelectingOrigin((current) => !current);
-                setIsSelectingDestination(false);
-              }}
-            ></Selector>
-            <Selector
-              title="Destination Node"
-              selectedValue={destinationNode?.id}
-              isSelecting={isSelectingDestination}
-              onSelect={() => {
-                setIsSelectingDestination((current) => !current);
-                setIsSelectingOrigin(false);
-              }}
-            ></Selector>
-          </div>
-
-          <div
-            id="options"
-            style={{ ...styles.BUTTON_CONTAINER, width: "100%" }}
-          >
-            <div
-              style={{
-                display: "flex",
-              }}
-            >
-              <input
-                type="checkbox"
-                checked={shouldShowIDs}
-                onChange={() => setShouldShowIDs(!shouldShowIDs)}
-              />
-              <span>IDs</span>
-            </div>
-            <div
-              style={{
-                display: "flex",
-              }}
-            >
-              <input
-                type="checkbox"
-                checked={shouldShowWeights}
-                onChange={() => setShouldShowWeights(!shouldShowWeights)}
-              />
-              <span>Weights</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Controls
+        onSave={onSave}
+        onImportFile={onImportFile}
+        onSelectGraph={onSelectGraph}
+        restartTraversal={restartTraversal}
+        fullTraversal={fullTraversal}
+        defaultGraphs={defaultGraphs}
+        setTraversalInterval={setTraversalInterval}
+        traversalInterval={traversalInterval}
+        hasTraversalStarted={hasTraversalStarted}
+        isTraversalDone={isTraversalDone}
+        graphTraversal={graphTraversal}
+        undoTraverse={undoTraverse}
+        traverse={traverse}
+        originNode={originNode}
+        destinationNode={destinationNode ?? null}
+        isSelectingOrigin={isSelectingOrigin}
+        isSelectingDestination={isSelectingDestination}
+        setIsSelectingOrigin={setIsSelectingOrigin}
+        setIsSelectingDestination={setIsSelectingDestination}
+        shouldShowIDs={shouldShowIDs}
+        setShouldShowIDs={setShouldShowIDs}
+        shouldShowWeights={shouldShowWeights}
+        setShouldShowWeights={setShouldShowWeights}
+      />
     </div>
   );
 }
