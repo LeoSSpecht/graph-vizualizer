@@ -33,28 +33,33 @@ export class Edge {
   }
 }
 
+type VertexSerialization = {
+  id: string;
+  x: number;
+  y: number;
+};
+
+type EdgeSerialization = {
+  origin: string;
+  destination: string;
+  weight: number;
+};
+
+type EdgesSerialization = {
+  origin: string;
+  neighbors: EdgeSerialization[];
+};
+
+type GraphSerialization = {
+  vertices: VertexSerialization[];
+  edges: EdgesSerialization[];
+};
+
 export class Graph {
   /// Map of vertex id to Vertex object
   vertices: Map<string, Vertex> = new Map<string, Vertex>();
   /// Map of vertex id to list of outgoing edges
   edges: Map<string, Edge[]> = new Map<string, Edge[]>();
-
-  constructor() {
-    this.addVertex(10, 10);
-    this.addVertex(30, 30);
-
-    this.addVertex(30, 45);
-
-    this.addVertex(52, 30);
-
-    this.addVertex(45, 45);
-
-    this.addEdge("0", "1", 10);
-    this.addEdge("1", "2", 5);
-    this.addEdge("1", "3", 10);
-    this.addEdge("2", "4", 1);
-    this.addEdge("3", "4", 10);
-  }
 
   getFirstVertex(): Vertex {
     let k = Array.from(this.vertices.keys());
@@ -68,6 +73,10 @@ export class Graph {
   addVertex(x: number, y: number): void {
     const vertexID = this._getVertexID();
     this.vertices.set(vertexID, new Vertex(vertexID, x, y));
+  }
+
+  addVertexWithId(id: string, x: number, y: number): void {
+    this.vertices.set(id, new Vertex(id, x, y));
   }
 
   _getEdgeID(vertexID1: string, vertexID2: string): string {
@@ -110,5 +119,51 @@ export class Graph {
       const D = Math.sqrt(dX * dX + dY * dY);
       return D < CIRCLE_RADIUS;
     });
+  }
+
+  exportGraph(): GraphSerialization {
+    let edges: EdgesSerialization[] = [];
+    this.edges.forEach((neighbors, key) => {
+      edges.push({
+        origin: key,
+        neighbors: neighbors.flatMap((edge) => {
+          return {
+            origin: edge.origin.id,
+            destination: edge.destination.id,
+            weight: edge.weight,
+          };
+        }),
+      });
+    });
+
+    let vertices: VertexSerialization[] = [];
+    this.vertices.forEach((vertex, key) => {
+      vertices.push({
+        id: vertex.id,
+        x: vertex.x,
+        y: vertex.y,
+      });
+    });
+
+    return {
+      edges: edges,
+      vertices: vertices,
+    };
+  }
+
+  static importGraph(g: GraphSerialization) {
+    let graph = new Graph();
+
+    g.vertices.forEach((v) => {
+      graph.addVertexWithId(v.id, v.x, v.y);
+    });
+
+    g.edges.forEach((n) => {
+      n.neighbors.forEach((e) => {
+        graph.addEdge(e.origin, e.destination, e.weight);
+      });
+    });
+
+    return graph;
   }
 }

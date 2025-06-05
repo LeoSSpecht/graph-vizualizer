@@ -116,7 +116,8 @@ function DrawArrowHead(
 function DrawEdge(
   ctx: CanvasRenderingContext2D,
   e: Edge,
-  graphTraversal: GraphTraversal
+  graphTraversal: GraphTraversal,
+  shouldShowWeights: boolean
 ) {
   let edgeColor = graphTraversal.GetEdgeColor(e);
   DrawLine(ctx, e.origin, e.destination, edgeColor);
@@ -128,24 +129,29 @@ function DrawEdge(
   let midpointX = e.origin.x + dX / 2;
   let midpointY = e.origin.y + dY / 2;
 
-  DrawCenteredText(
-    ctx,
-    e.weight.toString(),
-    midpointX,
-    midpointY,
-    undefined,
-    "rgb(33, 238, 112)"
-  );
+  if (shouldShowWeights) {
+    DrawCenteredText(
+      ctx,
+      e.weight.toString(),
+      midpointX,
+      midpointY,
+      undefined,
+      "rgb(33, 238, 112)"
+    );
+  }
 }
 
 function DrawVertex(
   ctx: CanvasRenderingContext2D,
   v: Vertex,
-  graphTraversal: GraphTraversal
+  graphTraversal: GraphTraversal,
+  shouldShowIDs: boolean
 ) {
   ctx.fillStyle = graphTraversal.GetVertexColor(v);
   DrawCircle(ctx, v.x, v.y, CIRCLE_RADIUS);
-  DrawCenteredText(ctx, v.id, v.x, v.y);
+  if (shouldShowIDs) {
+    DrawCenteredText(ctx, v.id, v.x, v.y);
+  }
 }
 
 function DrawLegend(
@@ -187,7 +193,9 @@ function DrawLegend(
 export function GraphDraw(
   canvasRef: RefObject<HTMLCanvasElement | null>,
   graph: Graph,
-  graphTraversal: GraphTraversal
+  graphTraversal: GraphTraversal,
+  shouldShowIDs: boolean,
+  shouldShowWeights: boolean
 ) {
   if (!canvasRef.current) {
     return;
@@ -206,12 +214,12 @@ export function GraphDraw(
   // Draw out each edge
   graph.edges.forEach((edges) => {
     edges.forEach((e) => {
-      DrawEdge(ctx, e, graphTraversal);
+      DrawEdge(ctx, e, graphTraversal, shouldShowWeights);
     });
   });
 
   // Draw out each vertex
   graph.vertices.forEach((v) => {
-    DrawVertex(ctx, v, graphTraversal);
+    DrawVertex(ctx, v, graphTraversal, shouldShowIDs);
   });
 }

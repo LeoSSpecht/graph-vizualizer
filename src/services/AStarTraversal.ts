@@ -143,8 +143,13 @@ export class AStar implements GraphTraversal {
           distance: currDistanceToNeighbor,
           previous: this.currentNode.id,
         });
+
+        let dX = Math.abs(this.destinationNode.x - neighbor.x);
+        let dY = Math.abs(this.destinationNode.y - neighbor.y);
+
+        let destinationEstimatedDistance = Math.sqrt(dX * dX + dY * dY);
         this.minHeap.heappush({
-          priority: currDistanceToNeighbor,
+          priority: currDistanceToNeighbor + destinationEstimatedDistance,
           vertexID: neighbor.id,
         });
       }

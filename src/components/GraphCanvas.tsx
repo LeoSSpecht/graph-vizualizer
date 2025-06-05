@@ -30,8 +30,8 @@ export function GraphCanvas({
       // context?.scale(2, 2);
       const clickEventListener = (event: MouseEvent) => {
         var rect = canvas.getBoundingClientRect();
-        var scaleX = canvas.width / rect.width;
-        var scaleY = canvas.height / rect.height;
+        var scaleX = canvas.width / rect.width / PIXEL_TO_DISTANCE_SCALE;
+        var scaleY = canvas.height / rect.height / PIXEL_TO_DISTANCE_SCALE;
 
         var x = (event.clientX - rect.left) * scaleX;
         var y = (event.clientY - rect.top) * scaleY;
@@ -48,5 +48,5 @@ export function GraphCanvas({
     }
   }, [ref, virtualX, virtualY, onClickHandler]);
 
-  return <canvas ref={ref} style={{ height: 600, width: 600 }}></canvas>;
+  return <canvas ref={ref} style={{ height: 550, width: 550 }}></canvas>;
 }
